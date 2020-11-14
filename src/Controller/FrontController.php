@@ -37,7 +37,7 @@ class FrontController extends AbstractController
             $session=$this->get('session')->set('titre', $theme);          
         }
         $session=$this->get('session')->get('titre');
-        
+       
         if(isset($session)){ 
             $ajax= $cardRepository->findByThemeField($session);
             $card=$paginator->paginate($ajax, 
