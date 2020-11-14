@@ -5,6 +5,5 @@ document.getElementById('button').addEventListener('click', function(e){
   
   
 })
-console.log(document.getElementById('session'))
 document.querySelector('select').value=document.getElementById('session').value;
 
