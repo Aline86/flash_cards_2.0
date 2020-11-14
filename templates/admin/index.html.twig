@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AdminController!{% endblock %}
+
+{% block body %}
+    <div class="menu_principal">        
+            <ul>
+                <li><a href="{{ path('card_index')}}">Nouvelle flip_card</a></li>
+                <li><a href="{{ path('theme_index')}}">Nouveau thème</a></li>
+                <li><a href="{{ path('user_index')}}">Nouvel utilisateur</a></li>
+                <li><a href="{{ path('front')}}">Front</a></li>
+            </ul>
+        </div>    
+{% endblock %}

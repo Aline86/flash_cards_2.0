@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Russe{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="form">
+            <h1>Flash_cards</h1>
+            <div class="js-specific-location-target">
+                {%  if session is defined %}
+                <input id="session" type="hidden" value="{{ session }}" />
+                {% endif %}
+               
+                <form id="theme_form" class="form">
+                    {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        <button class="btn">{{ button_label|default('Save') }}</button>
+                    {{ form_end(form) }}
+                </form>
+               
+            </div>
+        </div>
+    </div>
+        <div id="result">
+        {% if cards is defined  %}
+        {% for card in cards %}
+            
+            <div id="fr">
+                <div id="fr2">
+                    <div id="fr3">
+                        <div class="center"  >
+                            <div id="french">
+                                <div>{{ card.question }}
+                                    
+                                </div>
+                                
+                                <input id="button" type="submit" value="Traduction" />                       
+                            </div>
+                            
+                        </div>
+                        <div class="center">                   
+                            <div id="russian">
+                                <div>{{ card.reponse }}</div>
+                            </div>
+                        </div> 
+                        {% if card.image is not null  %}             
+                            <div class="img">
+                                <img src="{{ asset('uploads/images/' ~ card.image) }}" />
+                            </div>  
+                        {% endif %} 
+                        <span style="font-size: 15px;">créé le : {{ card.createdAt|date('Y-m-d H:i:s') }}</span>
+                            <br />
+                            <span style="font-size: 15px;">mis à jour le : {{ card.updatedAt|date('Y-m-d H:i:s') }}</span>
+                    </div> 
+                </div>
+            </div>    
+        {% endfor %}
+        <div class="pagination">
+        {{knp_pagination_render(cards)}}
+        </div>
+        {% endif %}   
+          <script>
+     
+</script>
+{% endblock %}
