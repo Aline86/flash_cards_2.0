@@ -5,6 +5,21 @@
 {% block body %}
     <h1>Card index</h1>
     <a href="{{ path('admin') }}">Retour</a>
+     <div class="form">
+        <h1>Flash_cards</h1>
+        
+            {%  if session is defined %}
+            <input id="session" type="hidden" value="{{ session }}" />
+            {% endif %}
+            
+            <form id="theme_form" class="form">
+                {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button class="btn">{{ button_label|default('Save') }}</button>
+                {{ form_end(form) }}
+            </form>
+            
+        </div> 
     <table class="table">
         <thead>
             <tr>

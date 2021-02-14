@@ -6,14 +6,14 @@
     <div class="container">
         <div class="form">
             <h1>Flash_cards</h1>
-           
+                
                 {%  if session is defined %}
                 <input id="session" type="hidden" value="{{ session }}" />
                 {% endif %}
                
                 <form id="theme_form" class="form">
                     {{ form_start(form) }}
-                        {{ form_widget(form) }}
+                        {{ form_widget(form.titre) }}
                         <button class="btn">{{ button_label|default('Save') }}</button>
                     {{ form_end(form) }}
                 </form>
@@ -21,39 +21,95 @@
             </div>
         </div>
     </div>
-        <div id="result">
+    <div id="result">
         {% if cards is defined  %}
+        
         {% for card in cards %}
-            
-            <div id="fr">
-                <div id="fr2">
-                    <div id="fr3">
-                        <div class="center"  >
-                            <div id="french">
-                                <div>{{ card.question }}   
-                                </div>
-                                <input id="button" type="submit" value="Traduction" />                       
+            <input id="id" type="hidden" value="{{ card.id }}" />
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="thick" id="question">{{ card.question }}</div>
+                    </div>
+                    <div class="flip-card-back" id="flip">  
+                        <div>
+                            <div>                
+                                <div class="thick" id="reponse">{{ card.reponse }}</div>
+                            </div>
+                            <div>
+                            {% if card.image is not null  %}             
+                                <div class="img">
+                                    <img id="img" src="{{ asset('uploads/images/' ~ card.image) }}" />
+                                </div>  
+                            {% endif %}
                             </div> 
                         </div>
-                        <div class="center">                   
-                            <div id="russian">
-                                <div>{{ card.reponse }}</div>
-                            </div>
-                        </div> 
-                        {% if card.image is not null  %}             
-                            <div class="img">
-                                <img src="{{ asset('uploads/images/' ~ card.image) }}" />
-                            </div>  
-                        {% endif %} 
-                        <span style="font-size: 15px;">créé le : {{ card.createdAt|date('Y-m-d H:i:s') }}</span>
-                            <br />
-                            <span style="font-size: 15px;">mis à jour le : {{ card.updatedAt|date('Y-m-d H:i:s') }}</span>
-                    </div> 
+                    </div>
                 </div>
-            </div>    
-        {% endfor %}
-        <div class="pagination">
-        {{knp_pagination_render(cards)}}
+            </div>  
         </div>
-        {% endif %}   
+    <div class="middle">
+        {% for i in 1..total %}
+
+                <a  class="page-link" href="{{ path("ajax", { 'page' : i } )}}">{{ i }}</a>
+
+        {% endfor %}
+    </div>
+     {% endfor %}
+     {% endif %}
+<script>
+
+
+
+document.querySelectorAll(".page-link").forEach(elem => {
+    elem.addEventListener("click", function(e){
+        e.preventDefault();
+        var id = elem.innerHTML;
+        console.log(id)
+       var page = elem.innerHTML;
+       var url = Routing.generate('ajax', {'page' : page}); 
+  
+      
+       
+        enabledChange(url, page, id)
+  
+        
+
+    
+    });
+})
+
+function enabledChange(changePath, page, id) {
+    
+
+   
+    $.ajax({
+        type: "POST",
+        dataType: 'json',
+        url: changePath,
+        data: {
+            'id' : id,
+            'motcle': page
+        },
+        
+        success: function(data){
+            console.log(data)
+
+          //  var div3 = document.getElementById('img');
+          //  div3.setAttribute('src', '');
+
+            data.forEach(function(elem){
+            console.log(elem.question)
+                document.getElementById('question').innerHTML = elem.question
+                document.getElementById('reponse').innerHTML = elem.reponse
+              //  div3.setAttribute('src', elem.img);
+
+            })
+        }
+    })
+}
+
+</script>
+
 {% endblock %}
+

@@ -29,10 +29,9 @@ class Card
     private $reponse;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Theme::class, inversedBy="titre")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Theme")
      */
-    private $theme;
+    protected $theme;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)

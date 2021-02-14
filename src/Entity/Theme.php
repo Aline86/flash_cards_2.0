@@ -22,7 +22,7 @@ class Theme
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $titre;
+    public $titre;
 
     
 

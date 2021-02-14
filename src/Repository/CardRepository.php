@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Card;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @method Card|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,32 +19,55 @@ class CardRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Card::class);
     }
-    public function findByThemeField($value)
-    {  
-       
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.theme = :val')
-            ->setParameter('val', $value['titre'])
-            ->getQuery()
-            ->getResult()
-        ;
+
+    public function myFindAllWithPaging1($currentPage, $nbPerPage, $session){
+
+        $query = $this->createQueryBuilder('a')
+            ->orderBy('a.id', 'ASC')
+            ->leftJoin('a.theme', 'c')
+            ->andWhere('c.id = '.$session)
+
+            ->setFirstResult(($currentPage - 1) * $nbPerPage )
+            ->setMaxResults($nbPerPage)
+            ->getQuery();
+
+        return new Paginator($query);
     }
-    // /**
-    //  * @return Card[] Returns an array of Card objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function myFindAllWithPaging($currentPage, $nbPerPage, $session){
+
+        $query = $this->createQueryBuilder('a')
+            ->orderBy('a.id', 'ASC')
+            ->leftJoin('a.theme', 'c')
+            ->andWhere('c.id = '.$session)
+            
+            ->setFirstResult(($currentPage - 1) * $nbPerPage )
+            ->setMaxResults($nbPerPage)
+            ->getQuery();  
+            
+        return new Paginator($query);
+    }
+    
+     /**
+      * @return Card[] Returns an array of Card objects
+      */
+    
+    public function findCard($id, $session)
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+
+
+
+        $query =
+            'SELECT * FROM card 
+            WHERE card.id = '.$id.' AND card.theme_id = '.$session
+
         ;
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
-    */
+   
 
     /*
     public function findOneBySomeField($value): ?Card

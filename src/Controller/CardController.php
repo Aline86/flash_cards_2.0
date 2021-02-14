@@ -12,23 +12,45 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Form\ThemeType;
 /**
  * @Route("admin/card")
  */
 class CardController extends AbstractController
 {
     /**
-     * @Route("/", name="card_index", methods={"GET"})
+     * @Route("/", name="card_index", methods={"GET","POST"})
      */
-    public function index(CardRepository $cardRepository): Response
+    public function index(CardRepository $cardRepository, Request $request ): Response
     {
+        $form=$this->createForm(ThemeType::class);
+
+        $form->handleRequest($request);
+        $theme=$request->get('theme');
+   
+        $session=$this->get('session')->set('titre', $theme);
+        if($session!=$theme){
+            session_unset();
+            $session=$this->get('session')->set('titre', $theme);          
+        }
+        $session=$this->get('session')->get('titre');
        
-      
-        return $this->render('card/index.html.twig', [
-            'cards' => $cardRepository->findAll(),
-            
-        ]);
+        if(isset($session)){ 
+            $cards = $cardRepository->findByThemeField($session);
+            return $this->render('card/index.html.twig', [
+                'cards' => $cards, 
+                'form' => $form->createView(),
+                'session' => $session['titre']     
+            ]); 
+         }        
+        
+        return $this->render('card/index.html.twig', [                    
+            'form' => $form->createView(),
+            'cards' => $cardRepository->findAll(),                      
+        ]);     
     }
+
+
 
     /**
      * @Route("/new", name="card_new", methods={"GET","POST"})
